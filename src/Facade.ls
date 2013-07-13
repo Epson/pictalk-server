@@ -17,28 +17,33 @@ Facade =
 	 * @function													user-register	
 	 * @memberof													Facade
 	 * @description												处理用户注册业务逻辑的接口，处理完毕后将结果通过res-user-register事件返回给shell模块
-	 * @param				{String}username			用户输入的用户名
+	 * @param				{String}email					用户输入的电子邮件地址
 	 * @param				{String}password 			用户输入的密码
 	 */															
-	user-register: !(username, password) ->
+	user-register: !(email, password) ->
 		user-obj = 
-			username: username,
+			email: email,
 			password: password
-		callback = !->
-
-		result = user.register user-obj, callback
-		EventCenter.trigger "res-user-register", result
+		callback = !(err)->
+			EventCenter.trigger "res-user-register", [err]
+		user.register user-obj, callback
+		
 
 	/**
 	 * @function													user-login	
 	 * @memberof													Facade		
 	 * @description												处理用户登陆业务逻辑的接口，处理完毕后将结果通过res-user-login事件返回给shell模块
-	 * @param				{String}username			用户输入的用户名
+	 * @param				{String}email					用户输入的电子邮件地址
 	 * @param				{String}password			用户输入的密码
 	 */
-	user-login: !(username, password) ->	
-		result = Core.user-login username, password
-		# EventCenter.trigger "res-user-login", result
+	user-login: !(email, password) ->	
+		user-obj = 
+			user-id: email,
+			password: password
+		callback = !(err)->
+			EventCenter.trigger "res-user-login", [err]
+		user.login user-obj, callback
+		
 
 	/**
 	 * @function													user-password-update	

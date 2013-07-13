@@ -15,29 +15,37 @@
      * @function													user-register	
      * @memberof													Facade
      * @description												处理用户注册业务逻辑的接口，处理完毕后将结果通过res-user-register事件返回给shell模块
-     * @param				{String}username			用户输入的用户名
+     * @param				{String}email					用户输入的电子邮件地址
      * @param				{String}password 			用户输入的密码
      */
-    userRegister: function(username, password){
-      var userObj, callback, result;
+    userRegister: function(email, password){
+      var userObj, callback;
       userObj = {
-        username: username,
+        email: email,
         password: password
       };
-      callback = function(){};
-      result = user.register(userObj, callback);
-      EventCenter.trigger("res-user-register", result);
+      callback = function(err){
+        EventCenter.trigger("res-user-register", [err]);
+      };
+      user.register(userObj, callback);
     }
     /**
      * @function													user-login	
      * @memberof													Facade		
      * @description												处理用户登陆业务逻辑的接口，处理完毕后将结果通过res-user-login事件返回给shell模块
-     * @param				{String}username			用户输入的用户名
+     * @param				{String}email					用户输入的电子邮件地址
      * @param				{String}password			用户输入的密码
      */,
-    userLogin: function(username, password){
-      var result;
-      result = Core.userLogin(username, password);
+    userLogin: function(email, password){
+      var userObj, callback;
+      userObj = {
+        userId: email,
+        password: password
+      };
+      callback = function(err){
+        EventCenter.trigger("res-user-login", [err]);
+      };
+      user.login(userObj, callback);
     }
     /**
      * @function													user-password-update	

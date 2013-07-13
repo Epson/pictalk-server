@@ -7,6 +7,10 @@
   app.configure(function(){
     app.use(express.bodyParser());
     app.use(express['static'](__dirname + "/../public"));
+    app.set("port", process.env.PORT || 8888);
+  });
+  app.configure("development", function(){
+    app.use(express.errorHandler());
   });
   /**
    * @description 								用户注册
@@ -16,17 +20,18 @@
    * @param				{Object}res 		响应对象
    */
   userRegister = function(req, res){
-    var username, password;
-    username = req.body.username;
+    var email, password;
+    console.log(req.body);
+    email = req.body.email;
     password = req.body.password;
-    EventCenter.bind('res-user-register', function(ack){
+    EventCenter.bind('res-user-register', function(err){
       var result;
       result = {
-        ack: ack
+        err: err
       };
       res.end(JSON.stringify(result));
     });
-    Facade.userRegister(username, password);
+    Facade.userRegister(email, password);
   };
   /**
    * @description 								用户登陆
@@ -36,17 +41,17 @@
    * @param				{Object}res 		响应对象
    */
   userLogin = function(req, res){
-    var username, password;
-    username = req.body.username;
+    var email, password;
+    email = req.body.email;
     password = req.body.password;
-    Facade.userLogin(username, password);
-    EventCenter.bind("res-user-login", function(ack){
+    EventCenter.bind('res-user-login', function(err){
       var result;
       result = {
-        ack: ack
+        err: err
       };
-      res.end(result);
+      res.end(JSON.stringify(result));
     });
+    Facade.userLogin(email, password);
   };
   /**
    * @description 								用户修改密码
@@ -426,13 +431,6 @@
      */,
     init: function(){
       this.route();
-      app.configure(function(){
-        app.set("port", process.env.PORT || 8888);
-        app.use(app.router);
-      });
-      app.configure("development", function(){
-        app.use(express.errorHandler());
-      });
       app.listen(app.get("port"), function(){
         console.log("server is listening to port " + app.get("port"));
       });
