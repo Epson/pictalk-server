@@ -1,6 +1,7 @@
 (function(){
-  var Core, EventCenter, Facade;
-  Core = require('./Core');
+  var async, user, EventCenter, Facade;
+  async = require('async');
+  user = require('./core/modules/user');
   EventCenter = require('./EventCenter');
   /**
    * @description													核心程序与路由程序进行交互的接口，实现了内部机制的隐藏
@@ -18,8 +19,14 @@
      * @param				{String}password 			用户输入的密码
      */
     userRegister: function(username, password){
-      var result;
-      result = Core.userRegister(username, password);
+      var userObj, callback, result;
+      userObj = {
+        username: username,
+        password: password
+      };
+      callback = function(){};
+      result = user.register(userObj, callback);
+      EventCenter.trigger("res-user-register", result);
     }
     /**
      * @function													user-login	

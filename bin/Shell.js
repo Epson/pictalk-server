@@ -426,8 +426,15 @@
      */,
     init: function(){
       this.route();
-      app.listen(8888, function(){
-        console.log("server is listening to port 8888");
+      app.configure(function(){
+        app.set("port", process.env.PORT || 8888);
+        app.use(app.router);
+      });
+      app.configure("development", function(){
+        app.use(express.errorHandler());
+      });
+      app.listen(app.get("port"), function(){
+        console.log("server is listening to port " + app.get("port"));
       });
     }
   };

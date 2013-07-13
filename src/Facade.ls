@@ -1,7 +1,7 @@
 
 
-require! [
-	"./Core",
+require! [async,
+	"./core/modules/user",
 	"./EventCenter"]
 	
 /**
@@ -21,8 +21,13 @@ Facade =
 	 * @param				{String}password 			用户输入的密码
 	 */															
 	user-register: !(username, password) ->
-		result = Core.user-register username, password
-		# EventCenter.trigger "res-user-register", result
+		user-obj = 
+			username: username,
+			password: password
+		callback = !->
+
+		result = user.register user-obj, callback
+		EventCenter.trigger "res-user-register", result
 
 	/**
 	 * @function													user-login	

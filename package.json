@@ -1,0 +1,19 @@
+{
+  "name": "pictalk_backend",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "start": "node app"
+  },
+  "dependencies": {
+    "express": "~3.3.3",
+    "mongoskin": "~0.5.0",
+    "mongodb": "~1.2.14",
+    "mocha": "~1.8.2",
+    "MD5": "~1.0.3",
+    "datetime": "~0.0.3",
+    "async": "~0.2.6",
+    "assert": "~0.4.9",
+    "nodemon": "~0.7.3"
+  }
+}

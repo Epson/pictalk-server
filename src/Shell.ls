@@ -359,10 +359,18 @@ Shell =
 		# 初始化路由设置
 		@route!
 
+		# Configuration
+		app.configure !->
+			app.set "port", process.env.PORT || 8888
+			app.use app.router
+
+		app.configure "development" , !->
+			app.use express.errorHandler!
+
 		# 监听8888端口
 		do
-			<-! app.listen 8888
-			console.log "server is listening to port 8888"
+			<-! app.listen app.get "port"
+			console.log "server is listening to port " + app.get "port"
 
 module.exports = Shell
 
