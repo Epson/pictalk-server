@@ -4,7 +4,7 @@
 	HTTP请求方式：POST
   	请求参数json示例：
 		{
-			userName: "zhaojian",
+			email: "121927532@qq.com",
 			password: "123456"
 		}
 	返回响应json示例：
@@ -19,8 +19,8 @@
 	HTTP请求方式：POST
   	请求参数json示例：
 		{
-			userName: "zhaojian",
-			password: "123456",
+			email: "121927532@qq.com",
+			password: "123456"
 		}
 	返回响应json示例：
 		{
@@ -33,8 +33,8 @@
 	HTTP请求方式: POST
 	请求参数json示例：
 		{
-			userId: 1,
-			oldPassword: "123456"										
+			userId: "121927532@qq.com",
+			oldPassword: "123456",										
 			newPassword: "abc123"				// 要更改的新密码的值
 		}
 	返回响应json示例：
@@ -49,17 +49,17 @@
 	HTTP请求方式: POST
 	请求参数json示例：
 		{
-			userId: 1,			
+			userId: "121927532@qq.com",			
 			avatar: "http://xxx.xx.xx.png",								
-			email: "epson.zhao@gmail.com",	// 电子邮件地址
-			TEL: "15902094760",
+			mobile: "15902094760",
 			gender: "male"					// 用户性别
 		}
 	返回响应json示例：
 		{
 			ack: true,						// 如果更改不成功则返回false
-			email: "epson.zhao@gmail.com",	// 修改成功的信息内容
-			gender: "male"					// 用户性别
+			gender: "male",					// 用户性别
+			avatar: "http://xxx.xx.xx.png",								
+			mobile: "15902094760"
 		}
 ```
 
@@ -69,7 +69,7 @@
 	HTTP请求方式: DELETE
 	请求参数json示例：
 		{
-			userId: 1
+			userId: "121927532@qq.com"
 		}
 	返回响应json示例：
 		{
@@ -82,14 +82,17 @@
 	HTTP请求方式: GET
 	请求参数json示例：
 		{
-			userId: 1											
+			userId: "121927532@qq.com"										
 		}
 	返回响应json示例：
 		{
 			ack: true						// 如果获取失败则返回false
 			userName: "zhaojian",			// 用户名
+			avatar: "http://xxx.xx.xx.png",			
 			email: "epson.zhao@gmail.com"	// 电子邮件
+			mobile: "15902094760",		
 			gender: "male"					// 用户性别
+
 		}
 ```
 
