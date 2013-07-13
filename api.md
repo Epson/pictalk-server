@@ -5,7 +5,7 @@
   	请求参数json示例：
 		{
 			userName: "zhaojian",
-			password: "123456",
+			password: "123456"
 		}
 	返回响应json示例：
 		{
@@ -49,14 +49,16 @@
 	HTTP请求方式: POST
 	请求参数json示例：
 		{
-			userId: 1,											
-			email: "epson.zhao@gmail.com"	// 电子邮件地址
+			userId: 1,			
+			avatar: "http://xxx.xx.xx.png",								
+			email: "epson.zhao@gmail.com",	// 电子邮件地址
+			TEL: "15902094760",
 			gender: "male"					// 用户性别
 		}
 	返回响应json示例：
 		{
 			ack: true,						// 如果更改不成功则返回false
-			email: "epson.zhao@gmail.com"	// 修改成功的信息内容
+			email: "epson.zhao@gmail.com",	// 修改成功的信息内容
 			gender: "male"					// 用户性别
 		}
 ```
