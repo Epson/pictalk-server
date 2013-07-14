@@ -10,6 +10,12 @@ do
 	<-! app.configure
 	app.use express.bodyParser!
 	app.use express.static __dirname + "/../public"
+	app.set "port", process.env.PORT || 8888
+
+# 指定开发环境下的参数
+do
+	<-! app.configure "development"
+	app.use express.errorHandler!
 
 /**
  * @description 								用户注册
@@ -19,14 +25,15 @@ do
  * @param				{Object}res 		响应对象
  */
 user-register = !(req, res) ->
-	username = req.body.username
+	console.log req.body
+	email = req.body.email
 	password = req.body.password
 	do 
-		(ack) <-! Event-center.bind 'res-user-register'
-		result = ack: ack
+		(err) <-! Event-center.bind 'res-user-register'
+		result = 
+			err: err
 		res.end JSON.stringify result
-	Facade.user-register username, password
-	
+	Facade.user-register email, password
 
 /**
  * @description 								用户登陆
@@ -36,13 +43,14 @@ user-register = !(req, res) ->
  * @param				{Object}res 		响应对象
  */
 user-login = !(req, res) ->
-	username = req.body.username
+	email = req.body.email
 	password = req.body.password
-	Facade.user-login username, password 
-	Event-center.bind "res-user-login", !(ack)->
-		result = ack: ack
-		res.end result
-
+	do 
+		(err) <-! Event-center.bind 'res-user-login'
+		result = 
+			err: err
+		res.end JSON.stringify result
+	Facade.user-login email, password 
 /**
  * @description 								用户修改密码
  * @function 										user-password-update
@@ -358,14 +366,6 @@ Shell =
 	init: !->
 		# 初始化路由设置
 		@route!
-
-		# Configuration
-		app.configure !->
-			app.set "port", process.env.PORT || 8888
-			app.use app.router
-
-		app.configure "development" , !->
-			app.use express.errorHandler!
 
 		# 监听8888端口
 		do
