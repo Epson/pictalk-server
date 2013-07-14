@@ -15,7 +15,6 @@ testpwd = '123456'
 testuser =
   user-id: testuid
   password: testpwd
-  username: \lhfcws
   email: testuid
 
 time = !->
@@ -28,8 +27,9 @@ describe 'User module Unit Test', !->
       user.register testuser, (err) ->
         if err
           throw err.err-msg
-        assert.equal true, true
-        done!
+        user.get-a-user {user-id: testuid}, (err, result) ->
+          assert.equal result.username, testuid.split('@')[0]
+          done!
 
   describe 'login', !->
     can 'User<lhfcws@test.com> login successfully.', !(done)->

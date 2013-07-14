@@ -15,7 +15,6 @@ testpwd = '123456';
 testuser = {
   userId: testuid,
   password: testpwd,
-  username: 'lhfcws',
   email: testuid
 };
 time = function(){
@@ -28,8 +27,12 @@ describe('User module Unit Test', function(){
         if (err) {
           throw err.errMsg;
         }
-        assert.equal(true, true);
-        return done();
+        return user.getAUser({
+          userId: testuid
+        }, function(err, result){
+          assert.equal(result.username, testuid.split('@')[0]);
+          return done();
+        });
       });
     });
   });
