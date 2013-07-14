@@ -28,6 +28,7 @@ User =
     user = user-obj
     user.user-id = user.email
     user.password = MD5 user.password
+    user.username = user.email.split('@')[0]
     User.user-exist user.user-id, (err, exist) ->
       if exist
         return callback new errors 2, 'USER_DUPLICATE'
