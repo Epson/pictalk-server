@@ -105,9 +105,9 @@
 			content: "哈哈"					// 返回该条聊天记录的内容 (这里有待商榷)
 		}
 ```
-
+<!-- 
 ###删除聊天信息：
-<!-- ```
+```
 	URL: chats/delete-chat
 	HTTP请求方式: DELETE
 	请求参数json示例：
@@ -119,6 +119,7 @@
 			ack: true						// 如果删除不成功则返回false
 		}
 ``` -->
+
 ###读取一条聊天信息:
 ```
 	URL: chats/read-chat
@@ -223,7 +224,7 @@
 	返回响应json示例：
 		{
 			err: err						// 如果获取不成功则返回err属性为err对象，成功则返回err属性为null
-			friends: friends 				// 如果获取成功则返回好友的用户信息
+			friends: friends 				// 如果获取成功则返回含有好友的用户信息的对象数组
 		}
 ```
 ###创建一张图片：
@@ -232,13 +233,12 @@
 	HTTP请求方式: POST
 	请求参数json示例：
 		{
-			userId: 3,						// 当前用户的id
+			userId: "lhfcws@gmail.com",		// 当前用户的id
 			picUrl: "xxx/xxx/xxx"			// 图片的url
 		}
 	返回响应json示例：
 		{
-			ack: true,						// 如果创建失败则返回false		
-			picUrl: "xxx/xxx/xxx"			// 图片的url								
+			err: err						// 如果创建不成功则返回err属性为err对象，成功则返回err属性为null							
 		}
 ```
 ###删除一张图片：（删除图片之后附着在该图片上的所有聊天记录都会被删除）
@@ -247,12 +247,12 @@
 	HTTP请求方式: DELETE
 	请求参数json示例：
 		{
-			userId: 3,						// 当前用户的id
+			userId: "lhfcws@gmail.com",		// 当前用户的id
 			picId: 20						// 图片的id
 		}
 	返回响应json示例：
 		{
-			ack: true,						// 如果删除失败则返回false									
+			err: err						// 如果删除不成功则返回err属性为err对象，成功则返回err属性为null	
 		}
 ```
 ###读取一张图片：
@@ -261,13 +261,13 @@
 	HTTP请求方式: GET
 	请求参数json示例：
 		{
-			userId: 3,						// 当前用户的id
+			userId: "lhfcws@gmail.com",		// 当前用户的id
 			picId: 20						// 图片的id
 		}
 	返回响应json示例：
 		{
-			ack: true,						// 如果获取失败则返回false
-			picUrl: "xxx/xxx/xxx"			// 图片的url								
+			err: err						// 如果读取不成功则返回err属性为err对象，成功则返回err属性为null
+			picture: picture				// 如果读取成功则返回含有相应图片信息的对象							
 		}
 ```
 ###根据特定用户读取多张图片：
@@ -276,20 +276,12 @@
 	HTTP请求方式: GET
 	请求参数json示例：
 		{
-			userId: 3,						// 当前用户的id
+			userId: "lhfcws@gmail.com",		// 当前用户的id
 		}
 	返回响应json示例：
 		{
-			ack: true,						// 如果获取失败则返回false
-			picsInfo: [						// 获取到的图片信息列表
-				{
-					picId: 20,				// 图片的id
-					picUrl: "xxx/xxx/xxx"	// 图片的url
-				}, {
-					picId: 21,
-					picUrl: "xxx/xxx/xxx"
-				}
-			]					
+			err: err						// 如果读取不成功则返回err属性为err对象，成功则返回err属性为null
+			pictures: pictures				// 如果读取成功则返回含有相应图片信息的对象数组			
 		}
 ```
 

@@ -271,12 +271,12 @@ read-friend-list = !(req, res) ->
 create-picture = !(req, res) ->
 	user-id = req.body.user-id
 	pic-url = req.body.pic-url
-	Facade.create-picture user-id, pic-url 
-	Event-center.bind "res-create-picture", !(ack, pic-url)->
+	do 
+		(err) <-! Event-center.bind "res-create-picture"
 		result = 
-			ack: ack,
-			pic-url: pic-url
-		res.end result
+			err: err
+		res.end JSON.stringify result
+	Facade.create-picture user-id, pic-url 
 
 /**
  * @description 								删除一张图片，同时还会附带删除所有与该图片相关的聊天记录
@@ -288,11 +288,12 @@ create-picture = !(req, res) ->
 delete-picture = !(req, res) ->
 	user-id = req.body.user-id
 	pic-id = req.body.pic-id
-	Facade.delete-picture user-id, pic-id 
-	Event-center.bind "res-delete-picture", !(ack)->
+	do 
+		(err) <-! Event-center.bind "res-delete-picture"
 		result = 
-			ack: ack
-		res.end result
+			err: err
+		res.end JSON.stringify result
+	Facade.delete-picture user-id, pic-id 
 
 /**
  * @description 								获取一张图片
@@ -304,12 +305,13 @@ delete-picture = !(req, res) ->
 read-picture = !(req, res) ->
 	user-id = req.body.user-id
 	pic-id = req.body.pic-id
-	Facade.read-picture user-id, pic-id 
-	Event-center.bind "res-read-picture", !(ack, pic-url)->
+	do 
+		(err, picture) <-! Event-center.bind "res-read-picture"
 		result = 
-			ack: ack,
-			pic-url: pic-url
-		res.end result
+			err: err,
+			picture: picture
+		res.end JSON.stringify result
+	Facade.read-picture user-id, pic-id 
 
 /**
  * @description 								根据特定用户获取多张图片，包含每张图片的id和url
@@ -320,12 +322,13 @@ read-picture = !(req, res) ->
  */
 read-pictures-by-user = !(req, res) ->
 	user-id = req.body.user-id
-	Facade.read-pictures-by-user user-id 
-	Event-center.bind "res-read-pictures-by-user", !(ack, pics-info)->
+	do 
+		(err, pictures) <-! Event-center.bind "res-read-pictures-by-user"
 		result = 
-			ack: ack,
-			pic-info: pic-info
-		res.end result
+			err: err,
+			pictures: pictures
+		res.end JSON.stringify result
+	Facade.read-pictures-by-user user-id 
 
 /**
  * @namespace 									Shell

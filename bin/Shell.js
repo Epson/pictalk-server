@@ -294,15 +294,14 @@
     var userId, picUrl;
     userId = req.body.userId;
     picUrl = req.body.picUrl;
-    Facade.createPicture(userId, picUrl);
-    EventCenter.bind("res-create-picture", function(ack, picUrl){
+    EventCenter.bind("res-create-picture", function(err){
       var result;
       result = {
-        ack: ack,
-        picUrl: picUrl
+        err: err
       };
-      res.end(result);
+      res.end(JSON.stringify(result));
     });
+    Facade.createPicture(userId, picUrl);
   };
   /**
    * @description 								删除一张图片，同时还会附带删除所有与该图片相关的聊天记录
@@ -315,14 +314,14 @@
     var userId, picId;
     userId = req.body.userId;
     picId = req.body.picId;
-    Facade.deletePicture(userId, picId);
-    EventCenter.bind("res-delete-picture", function(ack){
+    EventCenter.bind("res-delete-picture", function(err){
       var result;
       result = {
-        ack: ack
+        err: err
       };
-      res.end(result);
+      res.end(JSON.stringify(result));
     });
+    Facade.deletePicture(userId, picId);
   };
   /**
    * @description 								获取一张图片
@@ -335,15 +334,15 @@
     var userId, picId;
     userId = req.body.userId;
     picId = req.body.picId;
-    Facade.readPicture(userId, picId);
-    EventCenter.bind("res-read-picture", function(ack, picUrl){
+    EventCenter.bind("res-read-picture", function(err, picture){
       var result;
       result = {
-        ack: ack,
-        picUrl: picUrl
+        err: err,
+        picture: picture
       };
-      res.end(result);
+      res.end(JSON.stringify(result));
     });
+    Facade.readPicture(userId, picId);
   };
   /**
    * @description 								根据特定用户获取多张图片，包含每张图片的id和url
@@ -355,15 +354,15 @@
   readPicturesByUser = function(req, res){
     var userId;
     userId = req.body.userId;
-    Facade.readPicturesByUser(userId);
-    EventCenter.bind("res-read-pictures-by-user", function(ack, picsInfo){
+    EventCenter.bind("res-read-pictures-by-user", function(err, pictures){
       var result;
       result = {
-        ack: ack,
-        picInfo: picInfo
+        err: err,
+        pictures: pictures
       };
-      res.end(result);
+      res.end(JSON.stringify(result));
     });
+    Facade.readPicturesByUser(userId);
   };
   /**
    * @namespace 									Shell

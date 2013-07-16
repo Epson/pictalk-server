@@ -1,9 +1,10 @@
 (function(){
-  var async, user, friend, message, EventCenter, Facade;
+  var async, user, friend, message, picture, EventCenter, Facade;
   async = require('async');
   user = require('./core/modules/user');
   friend = require('/core/modules/friend');
   message = require('/core/modules/message');
+  picture = require('/core/modules/picture');
   EventCenter = require('./EventCenter');
   /**
    * @description													核心程序与路由程序进行交互的接口，实现了内部机制的隐藏
@@ -254,7 +255,17 @@
      * @param				{Number}user-id			创建图片的用户的id
      * @param				{String}pic-url			新创建图片的url
      */,
-    createPicture: function(userId, picUrl){}
+    createPicture: function(userId, picUrl){
+      var pictureObj, callback;
+      pictureObj = {
+        establisher: userId,
+        picUrl: picUrl
+      };
+      callback = function(err){
+        EventCenter.trigger("res-create-picture", [err]);
+      };
+      picture.createAPicture(pictureObj, callback);
+    }
     /**
      * @function												delete-picture	
      * @memberof												Facade
@@ -262,7 +273,16 @@
      * @param				{Number}user-id			删除图片的用户的id
      * @param				{Number}pic-id			被删除图片的id
      */,
-    deletePicture: function(userId, picId){}
+    deletePicture: function(userId, picId){
+      var pictureObj, callback;
+      pictureObj = {
+        picId: picId
+      };
+      callback = function(err){
+        EventCenter.trigger("res-delete-picture", [err]);
+      };
+      picture.deletePicture(pictureObj, callback);
+    }
     /**
      * @function												read-picture	
      * @memberof												Facade	
@@ -270,14 +290,33 @@
      * @param				{Number}user-id			要读取图片的用户的id
      * @param				{Number}pic-id			被读取的图片的id
      */,
-    readPicture: function(userId, picId){}
+    readPicture: function(userId, picId){
+      var pictureObj, callback;
+      pictureObj = {
+        userId: userId,
+        picId: picId
+      };
+      callback = function(err, picture){
+        EventCenter.trigger("res-read-picture", [err, picture]);
+      };
+      picture.getAPicture(pictureObj, callback);
+    }
     /**
      * @function												read-picture-by-user
      * @memberof												Facade			
      * @description											处理读取与特定用户相关的所有图片业务逻辑的接口，处理完毕后将结果通过res-read-pictures-by-user事件返回给shell模块
      * @param				{Number}user-id			被指定的特定用户的id
      */,
-    readPicturesByUser: function(userId){}
+    readPicturesByUser: function(userId){
+      var pictureObj, callback;
+      pictureObj = {
+        userId: userId
+      };
+      callback = function(err, pictures){
+        EventCenter.trigger("res-read-pictures-by-user", [err, pictures]);
+      };
+      picture.getPictures(pictureObj, callback);
+    }
     /**
      * @function												subscribe-events	
      * @memberof												Facade					

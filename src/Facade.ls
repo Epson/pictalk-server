@@ -4,6 +4,7 @@ require! [async,
 	"./core/modules/user",
 	"/core/modules/friend",
 	"/core/modules/message",
+	"/core/modules/picture",
 	"./EventCenter"]
 	
 /**
@@ -14,7 +15,6 @@ require! [async,
  * @author															赵剑（Cyril.Zhao）
  */
 Facade = 
-
 	/**
 	 * @function													user-register	
 	 * @memberof													Facade
@@ -229,6 +229,12 @@ Facade =
 	 * @param				{String}pic-url			新创建图片的url
 	 */
 	create-picture: !(user-id, pic-url) ->
+		picture-obj = 
+			establisher: user-id,
+			pic-url: pic-url
+		callback = !(err) ->
+			EventCenter.trigger "res-create-picture", [err]
+		picture.create-a-picture picture-obj, callback
 
 	/**
 	 * @function												delete-picture	
@@ -238,6 +244,11 @@ Facade =
 	 * @param				{Number}pic-id			被删除图片的id
 	 */
 	delete-picture: !(user-id, pic-id) ->
+		picture-obj = 
+			pic-id: pic-id
+		callback = !(err) ->
+			EventCenter.trigger "res-delete-picture", [err]
+		picture.delete-picture picture-obj, callback
 
 	/**
 	 * @function												read-picture	
@@ -247,6 +258,12 @@ Facade =
 	 * @param				{Number}pic-id			被读取的图片的id
 	 */
 	read-picture: !(user-id, pic-id) ->
+		picture-obj = 
+			user-id: user-id,
+			pic-id: pic-id
+		callback = !(err, picture) ->
+			EventCenter.trigger "res-read-picture", [err, picture]
+		picture.get-a-picture picture-obj, callback
 
 	/**
 	 * @function												read-picture-by-user
@@ -255,7 +272,12 @@ Facade =
 	 * @param				{Number}user-id			被指定的特定用户的id
 	 */
 	read-pictures-by-user: !(user-id) ->
-
+		picture-obj = 
+			user-id: user-id
+		callback = !(err, pictures) ->
+			EventCenter.trigger "res-read-pictures-by-user", [err, pictures]
+		picture.get-pictures picture-obj, callback
+		
 	/**
 	 * @function												subscribe-events	
 	 * @memberof												Facade					
