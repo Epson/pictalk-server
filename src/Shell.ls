@@ -131,29 +131,30 @@ create-chat = !(req, res) ->
 	pic-id = req.body.pic-id
 	from-user-id = req.body.from-user-id
 	to-user-id = req.body.to-user-id
-	msg-type = req.body.msg-type
-	content = req.body.content
-	Facade.create-chat pic-id, from-user-id, to-user-id, msg-type, content 
-	Event-center.bind "res-create-chat", !(ack, content)->
+	msg-body = req.body.msg-body
+	time = req.body.time
+	anchor = req.body.anchor
+	do 
+		(err) <-! Event-center.bind "res-create-chat"
 		result = 
-			ack: ack,
-			content: content
-		res.end result
+			err: err
+		res.end JSON.stringify result
+	Facade.create-chat pic-id, from-user-id, to-user-id, msg-body, time, anchor
 
-/**
- * @description 								删除一条聊天记录
- * @function 										delete-chat
- * @memberof										Shell
- * @param 			{Object}req 		请求对象	
- * @param				{Object}res 		响应对象
- */
-delete-chat = !(req, res) ->
-	chat-id = req.body.chat-id
-	Facade.delete-chat chat-id 
-	Event-center.bind "res-delete-chat", !(ack)->
-		result = 
-			ack: ack
-		res.end result
+# /**
+#  * @description 								删除一条聊天记录
+#  * @function 										delete-chat
+#  * @memberof										Shell
+#  * @param 			{Object}req 		请求对象	
+#  * @param				{Object}res 		响应对象
+#  */
+# delete-chat = !(req, res) ->
+# 	chat-id = req.body.chat-id
+# 	Facade.delete-chat chat-id 
+# 	Event-center.bind "res-delete-chat", !(ack)->
+# 		result = 
+# 			ack: ack
+# 		res.end result
 
 /**
  * @description 								获取同一张图片上的所有聊天记录
@@ -183,11 +184,12 @@ create-friend = !(req, res) ->
 	user-id = req.body.user-id
 	friend-id = req.body.friend-id
 	nick-name = req.body.nick-name
-	Facade.create-friend user-id, friend-id, nick-name 
-	Event-center.bind "res-create-friend", !(ack)->
+	do 
+		(err) <-! Event-center.bind "res-create-friend"
 		result = 
-			ack: ack
-		res.end result
+			err: err
+		res.end JSON.stringify result
+	Facade.create-friend user-id, friend-id, nick-name 
 
 /**
  * @description 								删除一位好友
@@ -199,11 +201,12 @@ create-friend = !(req, res) ->
 delete-friend = !(req, res) ->
 	user-id = req.body.user-id
 	friend-id = req.body.friend-id
-	Facade.delete-friend user-id, friend-id 
-	Event-center.bind "res-delete-friend", !(ack)->
+	do 
+		(err) <-! Event-center.bind "res-delete-friend"
 		result = 
-			ack: ack
-		res.end result
+			err: err
+		res.end JSON.stringify result
+	Facade.delete-friend user-id, friend-id 
 
 /**
  * @description 								更新好友昵称信息
@@ -216,11 +219,12 @@ update-friend-nick-name = !(req, res) ->
 	user-id = req.body.user-id
 	friend-id = req.body.friend-id
 	nick-name = req.body.nick-name
-	Facade.update-friend-nick-name user-id, friend-id, nick-name 
-	Event-center.bind "res-update-friend-nick-name", !(ack)->
+	do 
+		(err) <-! Event-center.bind "res-update-friend-nick-name"
 		result = 
-			ack: ack
-		res.end result
+			err: err
+		res.end JSON.stringify result
+	Facade.update-friend-nick-name user-id, friend-id, nick-name 
 
 /**
  * @description 								获取某个好友的个人信息
@@ -232,15 +236,13 @@ update-friend-nick-name = !(req, res) ->
 read-friend-info = !(req, res) ->
 	user-id = req.body.user-id
 	friend-id = req.body.friend-id
-	Facade.read-friend-info user-id, friend-id 
-	Event-center.bind "res-read-friend-info", !(ack, user-id, user-name, email, gender)->
+	do 
+		(err, friend) <-! Event-center.bind "res-read-friend-info"
 		result = 
-			ack: ack,
-			user-id: user-id,
-			user-name: user-name,
-			email: email,
-			gender: gender
-		res.end result
+			err: err,
+			friend: friend
+		res.end JSON.stringify result
+	Facade.read-friend-info user-id, friend-id 
 
 /**
  * @description 								获取好友列表中所有好友的基本信息，包括好友的id和昵称
@@ -251,12 +253,13 @@ read-friend-info = !(req, res) ->
  */
 read-friend-list = !(req, res) ->
 	user-id = req.body.user-id
-	Facade.read-friend-list user-id 
-	Event-center.bind "res-read-friend-list", !(ack, users-info)->
+	do 
+		(err, friends) <-! Event-center.bind "res-read-friend-list"
 		result = 
-			ack: ack,
-			users-info: users-info
-		res.end result
+			err: err,
+			friends: friends
+		res.end JSON.stringify result
+	Facade.read-friend-list user-id 
 
 /**
  * @description 								创建一张图片

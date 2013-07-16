@@ -82,7 +82,7 @@
 		}
 	返回响应json示例：
 		{
-			ack: true						// 如果获取不成功则返回err属性为err对象，成功则返回err属性为null
+			err: err						// 如果获取不成功则返回err属性为err对象，成功则返回err属性为null
 			user: user 						// 如果获取不成功则该项为null或undefined，成功则返回user对象的信息
 		}
 ```
@@ -97,7 +97,7 @@
 			fromUserId: 1,
 			toUserId: 3,
 			msgType: "text",				// 如果是声音消息则msgType为"voice"，且有与之对应的属性例如"voiceUrl"
-			content: "哈哈",					// 与文本消息对应的属性为text													
+			content: "哈哈",				// 与文本消息对应的属性为text		
 		}
 	返回响应json示例：
 		{
@@ -107,7 +107,7 @@
 ```
 
 ###删除聊天信息：
-```
+<!-- ```
 	URL: chats/delete-chat
 	HTTP请求方式: DELETE
 	请求参数json示例：
@@ -118,7 +118,7 @@
 		{
 			ack: true						// 如果删除不成功则返回false
 		}
-```
+``` -->
 ###读取一条聊天信息:
 ```
 	URL: chats/read-chat
@@ -159,13 +159,13 @@
 	HTTP请求方式: POST
 	请求参数json示例：
 		{
-			userId: 3,						// 当前用户的id
-			friendId: 2 					// 要添加为好友的用户id
+			userId: "lhfcws@gmail.com",						// 当前用户的id
+			friendId: "chenxuejia@foxmail.com" 				// 要添加为好友的用户id
 			nickName: ""					// 好友的备注昵称默认为空
 		}
 	返回响应json示例：
 		{
-			ack: true						// 如果添加失败则返回false												
+			err: err						// 如果添加不成功则返回err属性为err对象，成功则返回err属性为null	
 		}
 ```
 ###删除好友：
@@ -174,12 +174,12 @@
 	HTTP请求方式: DELETE
 	请求参数json示例：
 		{
-			userId: 3,						// 当前用户的id
-			friendId: 2 					// 要删除好友的用户id
+			userId: "lhfcws@gmail.com",						// 当前用户的id
+			friendId: "chenxuejia@foxmail.com" 				// 要删除好友的用户id
 		}
 	返回响应json示例：
 		{
-			ack: true						// 如果删除失败则返回false												
+			err: err						// 如果删除不成功则返回err属性为err对象，成功则返回err属性为null
 		}
 ```
 ###更新好友昵称信息：
@@ -188,13 +188,13 @@
 	HTTP请求方式: POST
 	请求参数json示例：
 		{
-			userId: 3,						// 当前用户的id
-			friendId: 2 					// 要修改备注名称的好友的用户id
-			nickName: "cyril"				// 要修改的好友昵称
+			userId: "lhfcws@gmail.com",						// 当前用户的id
+			friendId: "chenxuejia@foxmail.com" 				// 要修改备注名称的好友的用户id
+			nickName: "cyril"								// 要修改的好友昵称
 		}
 	返回响应json示例：
 		{
-			ack: true						// 如果修改失败则返回false												
+			err: err						// 如果更新不成功则返回err属性为err对象，成功则返回err属性为null
 		}
 ```
 ###读取某个好友的用户信息：
@@ -203,16 +203,13 @@
 	HTTP请求方式: GET
 	请求参数json示例：
 		{
-			userId: 3,						// 当前用户的id
-			friendId: 2 					// 要获取信息的好友的用户id
+			userId: "lhfcws@gmail.com",						// 当前用户的id
+			friendId: "chenxuejia@foxmail.com" 				// 要获取信息的好友的用户id
 		}
 	返回响应json示例：
 		{
-			ack: true,						// 如果获取失败则返回false		
-			userId: 2,						// 好友的用户id
-			userName: "zhaojian"			// 好友的用户名
-			email: "121927532@qq.com"		// 好友的电子邮件地址	
-			gender: "male"					// 好友的性别									
+			err: err						// 如果获取不成功则返回err属性为err对象，成功则返回err属性为null
+			friend: friend 					// 如果获取成功则返回好友的用户信息
 		}
 ```
 ###读取好友列表的信息：
@@ -221,20 +218,12 @@
 	HTTP请求方式: GET
 	请求参数json示例：
 		{
-			userId: 3,						// 当前用户的id
+			userId: "lhfcws@gmail.com"		// 当前用户的id
 		}
 	返回响应json示例：
 		{
-			ack: true,						// 如果获取失败则返回false		
-			usersInfo: [					// 保存有所有好友基本信息的数组
-				{
-					userId: 2,				// 好友的用户id
-					nickName: "zhaojian"	// 好友的昵称，如果昵称为空则为用户名
-				}, {
-					userId: 3,
-					nickName: "epson"
-				}				
-			]									
+			err: err						// 如果获取不成功则返回err属性为err对象，成功则返回err属性为null
+			friends: friends 				// 如果获取成功则返回好友的用户信息
 		}
 ```
 ###创建一张图片：

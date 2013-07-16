@@ -25,13 +25,13 @@ objectify = (attr, _obj) ->
  * @module
  */
 Message =
-  create-a-message: (msgobject, callback) ->
-    message-model.count-message {pt-id: msgobject.pt-id}, (err, result) ->
+  create-a-message: (msg-object, callback) ->
+    message-model.count-message {pt-id: msg-object.pt-id}, (err, result) ->
       cnt = result + 1
-      msgobject.msg-index = cnt
-      msgobject.msg-id = msgobject.pt-id + cnt
+      msg-object.msg-index = cnt
+      msg-object.msg-id = msg-object.pt-id + cnt
 
-      message-model.insert-message msgobject, (err) ->
+      message-model.insert-message msg-object, (err) ->
         return callback null
 
   get-message-list-by-sender: (_user, callback) ->

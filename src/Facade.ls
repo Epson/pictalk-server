@@ -2,6 +2,8 @@
 
 require! [async,
 	"./core/modules/user",
+	"/core/modules/friend",
+	"/core/modules/message",
 	"./EventCenter"]
 	
 /**
@@ -100,7 +102,7 @@ Facade =
 	 */
 	user-info-read: !(user-id) ->
 		user-obj = 
-			user-id = user-id
+			user-id: user-id
 		callback = !(err, user) ->
 			EventCenter.trigger "res-user-info-read", [err, user]
 		user.get-a-user user-obj, callback
@@ -115,15 +117,25 @@ Facade =
 	 * @param				{String}msg-type			消息类型，可以是文本或者声音
 	 * @param				{String}content				消息内容
 	 */
-	create-chat: !(pic-id, from-user-id, to-user-id, msg-type, content) ->
+	create-chat: !(pic-id, from-user-id, to-user-id, msg-body, time, anchor) ->
+		msg-object = 
+			pt-id: pic-id,
+			sender: from-user-id,
+			receiver: to-user-id,
+			msg-body: msg-body,
+			time: time,
+			anchor: anchor
+		callback = !(err) ->
+			EventCenter.trigger "res-create-chat", [err]
+		message.create-a-message msg-object, callback
 
-	/**
-	 * @function													delete-chat		
-	 * @memberof													Facade	
-	 * @description												处理删除聊天记录业务逻辑的接口，处理完毕后将结果通过res-delete-chat事件返回给shell模块
-	 * @param				{Number}chat-id				要删除的消息的id
-	 */
-	delete-chat: !(chat-id) ->
+	# /**
+	#  * @function													delete-chat		
+	#  * @memberof													Facade	
+	#  * @description												处理删除聊天记录业务逻辑的接口，处理完毕后将结果通过res-delete-chat事件返回给shell模块
+	#  * @param				{Number}chat-id				要删除的消息的id
+	#  */
+	# delete-chat: !(chat-id) ->
 
 	/**
 	 * @function													read-several-chat	
@@ -141,7 +153,14 @@ Facade =
 	 * @param				{Number}friend-id			被添加为好友的用户的id
 	 * @param				{String}nick-name			为好友添加的昵称
 	 */
-	create-friend: !(user-id, friend-id, nick-name) ->
+	create-friend: !(user-id, friend-id, friend-nickname) ->
+		friend-obj = 
+			user-id: user-id,
+			friend-id: friend-id,
+			friend-nickname: friend-nickname
+		callback = !(err) ->
+			EventCenter.trigger "res-create-friend", [err]
+		friend.add-friend friend-obj, callback
 
 	/**
 	 * @function												delete-friend		
@@ -151,6 +170,12 @@ Facade =
 	 * @param				{Number}friend-id		被从好友列表中删除的用户的id
 	 */
 	delete-friend: !(user-id, friend-id) ->
+		friend-obj = 
+			user-id: user-id,
+			friend-id: friend-id
+		callback = !(err) ->
+			EventCenter.trigger "res-delete-friend", [err]
+		friend.add-friend friend-obj, callback
 
 	/**
 	 * @function												update-friend-nick-name		
@@ -160,7 +185,14 @@ Facade =
 	 * @param				{Number}friend-id		被修改昵称的好友的用户id
 	 * @param				{String}nick-name		要修改的昵称
 	 */
-	update-friend-nick-name: !(user-id, friend-id, nick-name) ->
+	update-friend-nick-name: !(user-id, friend-id, friend-nickname) ->
+		friend-obj = 
+			user-id: user-id,
+			friend-id: friend-id,
+			friend-nickname: friend-nickname
+		callback = !(err) ->
+			EventCenter.trigger "res-update-friend-nick-name", [err]
+		friend.add-friend friend-obj, callback
 
 	/**
 	 * @function												read-friend-info	
@@ -170,6 +202,11 @@ Facade =
 	 * @param				{Number}friend-id		被读取信息的好友的用户id
 	 */
 	read-friend-info: !(user-id, friend-id) ->
+		friend-obj = 
+			user-id: friend-id
+		callback = !(err, friend) ->
+			EventCenter.trigger "res-read-friend-info", [err, friend]
+		user.get-a-user friend-obj, callback
 
 	/**
 	 * @function												read-friend-list		
@@ -178,6 +215,11 @@ Facade =
 	 * @param				{Number}user-id			发起读取好友列表操作的用户的id
 	 */
 	read-friend-list: !(user-id) ->
+		friend-obj = 
+			user-id: user-id
+		callback = !(err, friends) ->
+			EventCenter.trigger "res-read-friend-list", [err, friends]
+		friend.get-friends-by-user friend-obj, callback
 
 	/**
 	 * @function												create-picture	
