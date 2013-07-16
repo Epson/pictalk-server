@@ -9,7 +9,7 @@
 		}
 	返回响应json示例：
 		{
-			ack: true						// 如果注册不成功则返回false
+			err: err						// 如果注册不成功则返回err属性为err对象，成功则返回err属性为null
 		}
 ```
 
@@ -24,7 +24,7 @@
 		}
 	返回响应json示例：
 		{
-			ack: true						// 如果登陆失败则返回false
+			err: err						// 如果登陆失败则返回err属性为err对象，成功则返回err属性为null
 		}
 ```
 ###用户修改密码：
@@ -39,7 +39,7 @@
 		}
 	返回响应json示例：
 		{
-			ack: true,						// 如果更改不成功则返回false
+			err: err						// 如果更改不成功则返回err属性为err对象，成功则返回err属性为null
 		}
 ```
 
@@ -52,14 +52,10 @@
 			userId: "121927532@qq.com",			
 			avatar: "http://xxx.xx.xx.png",								
 			mobile: "15902094760",
-			gender: "male"					// 用户性别
 		}
 	返回响应json示例：
 		{
-			ack: true,						// 如果更改不成功则返回false
-			gender: "male",					// 用户性别
-			avatar: "http://xxx.xx.xx.png",								
-			mobile: "15902094760"
+			err: err						// 如果更改不成功则返回err属性为err对象，成功则返回err属性为null
 		}
 ```
 
@@ -73,7 +69,7 @@
 		}
 	返回响应json示例：
 		{
-			ack: true						// 如果删除不成功则返回false
+			err: err						// 如果删除不成功则返回err属性为err对象，成功则返回err属性为null
 		}
 ```
 ###获取用户信息：
@@ -86,13 +82,8 @@
 		}
 	返回响应json示例：
 		{
-			ack: true						// 如果获取失败则返回false
-			userName: "zhaojian",			// 用户名
-			avatar: "http://xxx.xx.xx.png",			
-			email: "epson.zhao@gmail.com"	// 电子邮件
-			mobile: "15902094760",		
-			gender: "male"					// 用户性别
-
+			ack: true						// 如果获取不成功则返回err属性为err对象，成功则返回err属性为null
+			user: user 						// 如果获取不成功则该项为null或undefined，成功则返回user对象的信息
 		}
 ```
 

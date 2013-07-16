@@ -27,7 +27,6 @@ Facade =
 		callback = !(err)->
 			EventCenter.trigger "res-user-register", [err]
 		user.register user-obj, callback
-		
 
 	/**
 	 * @function													user-login	
@@ -54,7 +53,13 @@ Facade =
 	 * @param				{Number}user-id				用户的id
 	 */
 	user-password-update: !(new-password, old-password, user-id) ->
-		result = Core.user-password-update new-password, old-password, user-id
+		user-obj = 
+			user-id: user-id,
+			password: old-password,
+			new-password: new-password
+		callback = !(err) ->
+			EventCenter.trigger "res-user-password-update", [err]
+		user.change-password user-obj, callback
 
 	/**
 	 * @function													user-info-update	
@@ -63,7 +68,16 @@ Facade =
 	 * @param				{Number}user-id				用户的id
 	 * @param				{String}email					用户要更新的电子邮件地址
 	 */
-	user-info-update: !(user-id, email) ->
+	user-info-update: !(user-id, avatar, mobile) ->
+		user-obj = 
+			user-id: user-id
+		if avatar? 
+			user-obj.avatar = avatar
+		if mobile? 
+			user-obj.mobile = mobile
+		callback = !(err) ->
+			EventCenter.trigger "res-user-info-update", [err]
+		user.update-user-info user-obj, callback
 
 	/**
 	 * @function													user-destroy	
@@ -72,6 +86,11 @@ Facade =
 	 * @param				{Number}user-id				用户的id
 	 */
 	user-destroy: !(user-id) ->
+		user-obj = 
+			user-id: user-id
+		callback = !(err) ->
+			EventCenter.trigger "res-user-destroy", [err]
+		user.delete-user user-obj, callback
 
 	/**
 	 * @function													user-info-read	
@@ -80,6 +99,11 @@ Facade =
 	 * @param				{Number}user-id				用户的id
 	 */
 	user-info-read: !(user-id) ->
+		user-obj = 
+			user-id = user-id
+		callback = !(err, user) ->
+			EventCenter.trigger "res-user-info-read", [err, user]
+		user.get-a-user user-obj, callback
 
 	/**
 	 * @function													create-chat		

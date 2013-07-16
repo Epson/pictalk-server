@@ -43,6 +43,7 @@ user-register = !(req, res) ->
  * @param				{Object}res 		响应对象
  */
 user-login = !(req, res) ->
+	console.log req.body
 	email = req.body.email
 	password = req.body.password
 	do 
@@ -62,12 +63,12 @@ user-password-update = !(req, res) ->
 	new-password = req.body.new-password
 	old-password = req.body.old-password
 	user-id = req.body.user-id
-	Facade.user-password-update new-password, old-password, user-id 
-	Event-center.bind "res-user-password-update", !(ack)->
+	do 
+		(err) <-! Event-center.bind "res-user-password-update"
 		result = 
-			ack: ack
-		res.end result
-
+			err: err
+		res.end JSON.stringify result
+	Facade.user-password-update new-password, old-password, user-id 
 /**
  * @description 								用户修改个人信息
  * @function 										user-info-update
@@ -77,14 +78,14 @@ user-password-update = !(req, res) ->
  */
 user-info-update = !(req, res) ->
 	user-id = req.body.user-id
-	email = req.body.email
-	Facade.user-info-update user-id, email 
-	Event-center.bind "res-user-info-update", !(ack, email, gender)->
-		result = 
-			ack: ack,
-			email: email,
-			gender: gender
-		res.end result
+	avatar = req.body.avatar
+	mobile = req.body.mobile
+	do 
+		(err) <-! Event-center.bind "res-user-info-update"
+		result =
+			err: err
+		res.end JSON.stringify result
+	Facade.user-info-update user-id, avatar, mobile 
 
 /**
  * @description 								用户注销帐号
@@ -95,11 +96,12 @@ user-info-update = !(req, res) ->
  */
 user-destroy = !(req, res) ->
 	user-id = req.body.user-id
-	Facade.user-destroy user-id
-	Event-center.bind "res-user-destroy", !(ack)->
+	do 
+		(err) <-! Event-center.bind "res-user-destroy"
 		result = 
-			ack: ack
-		res.end result
+			err: err
+		res.end JSON.stringify result
+	Facade.user-destroy user-id
 
 /**
  * @description 								获取用户个人信息
@@ -110,14 +112,13 @@ user-destroy = !(req, res) ->
  */
 user-info-read = !(req, res) ->
 	user-id = req.body.user-id
-	Facade.user-info-read user-id 
-	Event-center.bind "res-user-info-read", !(ack, user-name, email, gender)->
+	do 
+		(err, user) <-! Event-center.bind "res-user-info-read"
 		result = 
-			ack: ack,
-			user-name: user-name,
-			email: email,
-			gender: gender
-		res.end result
+			err: err,
+			user: user
+		res.end JSON.stringify result
+	Facade.user-info-read user-id 
 
 /**
  * @description 								创建一条聊天记录

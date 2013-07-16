@@ -42,6 +42,7 @@
    */
   userLogin = function(req, res){
     var email, password;
+    console.log(req.body);
     email = req.body.email;
     password = req.body.password;
     EventCenter.bind('res-user-login', function(err){
@@ -65,14 +66,14 @@
     newPassword = req.body.newPassword;
     oldPassword = req.body.oldPassword;
     userId = req.body.userId;
-    Facade.userPasswordUpdate(newPassword, oldPassword, userId);
-    EventCenter.bind("res-user-password-update", function(ack){
+    EventCenter.bind("res-user-password-update", function(err){
       var result;
       result = {
-        ack: ack
+        err: err
       };
-      res.end(result);
+      res.end(JSON.stringify(result));
     });
+    Facade.userPasswordUpdate(newPassword, oldPassword, userId);
   };
   /**
    * @description 								用户修改个人信息
@@ -82,19 +83,18 @@
    * @param				{Object}res 		响应对象
    */
   userInfoUpdate = function(req, res){
-    var userId, email;
+    var userId, avatar, mobile;
     userId = req.body.userId;
-    email = req.body.email;
-    Facade.userInfoUpdate(userId, email);
-    EventCenter.bind("res-user-info-update", function(ack, email, gender){
+    avatar = req.body.avatar;
+    mobile = req.body.mobile;
+    EventCenter.bind("res-user-info-update", function(err){
       var result;
       result = {
-        ack: ack,
-        email: email,
-        gender: gender
+        err: err
       };
-      res.end(result);
+      res.end(JSON.stringify(result));
     });
+    Facade.userInfoUpdate(userId, avatar, mobile);
   };
   /**
    * @description 								用户注销帐号
@@ -106,14 +106,14 @@
   userDestroy = function(req, res){
     var userId;
     userId = req.body.userId;
-    Facade.userDestroy(userId);
-    EventCenter.bind("res-user-destroy", function(ack){
+    EventCenter.bind("res-user-destroy", function(err){
       var result;
       result = {
-        ack: ack
+        err: err
       };
-      res.end(result);
+      res.end(JSON.stringify(result));
     });
+    Facade.userDestroy(userId);
   };
   /**
    * @description 								获取用户个人信息
@@ -125,17 +125,15 @@
   userInfoRead = function(req, res){
     var userId;
     userId = req.body.userId;
-    Facade.userInfoRead(userId);
-    EventCenter.bind("res-user-info-read", function(ack, userName, email, gender){
+    EventCenter.bind("res-user-info-read", function(err, user){
       var result;
       result = {
-        ack: ack,
-        userName: userName,
-        email: email,
-        gender: gender
+        err: err,
+        user: user
       };
-      res.end(result);
+      res.end(JSON.stringify(result));
     });
+    Facade.userInfoRead(userId);
   };
   /**
    * @description 								创建一条聊天记录

@@ -56,8 +56,16 @@
      * @param				{Number}user-id				用户的id
      */,
     userPasswordUpdate: function(newPassword, oldPassword, userId){
-      var result;
-      result = Core.userPasswordUpdate(newPassword, oldPassword, userId);
+      var userObj, callback;
+      userObj = {
+        userId: userId,
+        password: oldPassword,
+        newPassword: newPassword
+      };
+      callback = function(err){
+        EventCenter.trigger("res-user-password-update", [err]);
+      };
+      user.changePassword(userObj, callback);
     }
     /**
      * @function													user-info-update	
@@ -66,21 +74,52 @@
      * @param				{Number}user-id				用户的id
      * @param				{String}email					用户要更新的电子邮件地址
      */,
-    userInfoUpdate: function(userId, email){}
+    userInfoUpdate: function(userId, avatar, mobile){
+      var userObj, callback;
+      userObj = {
+        userId: userId
+      };
+      if (avatar != null) {
+        userObj.avatar = avatar;
+      }
+      if (mobile != null) {
+        userObj.mobile = mobile;
+      }
+      callback = function(err){
+        EventCenter.trigger("res-user-info-update", [err]);
+      };
+      user.updateUserInfo(userObj, callback);
+    }
     /**
      * @function													user-destroy	
      * @memberof													Facade	
      * @description												处理用户注销账户业务逻辑的接口，处理完毕后将结果通过res-user-destroy事件返回给shell模块
      * @param				{Number}user-id				用户的id
      */,
-    userDestroy: function(userId){}
+    userDestroy: function(userId){
+      var userObj, callback;
+      userObj = {
+        userId: userId
+      };
+      callback = function(err){
+        EventCenter.trigger("res-user-destroy", [err]);
+      };
+      user.deleteUser(userObj, callback);
+    }
     /**
      * @function													user-info-read	
      * @memberof													Facade				
      * @description												处理用户获取个人信息业务逻辑的接口，处理完毕后将结果通过res-user-info-read事件返回给shell模块
      * @param				{Number}user-id				用户的id
      */,
-    userInfoRead: function(userId){}
+    userInfoRead: function(userId){
+      var userObj, callback;
+      userObj = userId = userId;
+      callback = function(err, user){
+        EventCenter.trigger("res-user-info-read", [err, user]);
+      };
+      user.getAUser(userObj, callback);
+    }
     /**
      * @function													create-chat		
      * @memberof													Facade
