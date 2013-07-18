@@ -2,9 +2,9 @@
 
 require! [async,
 	"./core/modules/user",
-	"/core/modules/friend",
-	"/core/modules/message",
-	"/core/modules/picture",
+	"./core/modules/friend",
+	"./core/modules/message",
+	"./core/modules/picture",
 	"./EventCenter"]
 	
 /**
@@ -111,15 +111,15 @@ Facade =
 	 * @function													create-chat		
 	 * @memberof													Facade
 	 * @description												处理发送聊天消息业务逻辑的接口，处理完毕后将结果通过res-create-chat事件返回给shell模块
-	 * @param				{Number}pic-id				图片的id
+	 * @param				{Number}pt-id					图片的id
 	 * @param				{Number}from-user-id	消息发送者的用户id
 	 * @param				{Number}to-user-id		消息接收者的用户id
 	 * @param				{String}msg-type			消息类型，可以是文本或者声音
 	 * @param				{String}content				消息内容
 	 */
-	create-chat: !(pic-id, from-user-id, to-user-id, msg-body, time, anchor) ->
+	create-chat: !(pt-id, from-user-id, to-user-id, msg-body, time, anchor) ->
 		msg-object = 
-			pt-id: pic-id,
+			pt-id: pt-id,
 			sender: from-user-id,
 			receiver: to-user-id,
 			msg-body: msg-body,
@@ -138,12 +138,17 @@ Facade =
 	# delete-chat: !(chat-id) ->
 
 	/**
-	 * @function													read-several-chat	
-	 * @memberof													Facade
-	 * @description												处理读取与特定图片相关的多条聊天记录业务逻辑的接口，处理完毕后将结果通过res-read-several-chat事件返回给shell模块
-	 * @param				{Number}pic-id				要指定获取聊天记录的图片id
+	 * @function														read-several-chat	
+	 * @memberof														Facade
+	 * @description													处理读取与特定图片相关的多条聊天记录业务逻辑的接口，处理完毕后将结果通过res-read-several-chat事件返回给shell模块
+	 * @param				{Number}pt-id						要指定获取聊天记录的图片id
 	 */
-	read-several-chat: !(pic-id) ->
+	read-several-chat: !(pt-id) ->
+		msg-object = 
+			pt-id: pt-id
+		callback = !(err, chats) ->
+			EventCenter.trigger "res-read-several-chat", [err, chats]
+		message.get-message-list-by-picture msg-object, callback
 
 	/**
 	 * @function												  create-friend	
@@ -277,7 +282,7 @@ Facade =
 		callback = !(err, pictures) ->
 			EventCenter.trigger "res-read-pictures-by-user", [err, pictures]
 		picture.get-pictures picture-obj, callback
-		
+
 	/**
 	 * @function												subscribe-events	
 	 * @memberof												Facade					

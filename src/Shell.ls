@@ -28,7 +28,7 @@ user-register = !(req, res) ->
 	console.log req.body
 	email = req.body.email
 	password = req.body.password
-	do 
+	do
 		(err) <-! Event-center.bind 'res-user-register'
 		result = 
 			err: err
@@ -39,7 +39,7 @@ user-register = !(req, res) ->
  * @description 								用户登陆
  * @function 										user-login
  * @memberof										Shell
- * @param 			{Object}req 		请求对象	
+ * @param 			{Object}req 		请求对象
  * @param				{Object}res 		响应对象
  */
 user-login = !(req, res) ->
@@ -128,18 +128,25 @@ user-info-read = !(req, res) ->
  * @param				{Object}res 		响应对象
  */
 create-chat = !(req, res) ->
-	pic-id = req.body.pic-id
-	from-user-id = req.body.from-user-id
-	to-user-id = req.body.to-user-id
-	msg-body = req.body.msg-body
-	time = req.body.time
-	anchor = req.body.anchor
-	do 
+	chats = req.body.chats
+	num-of-chats = chats.length
+	num-of-chats-created = 0
+	do
 		(err) <-! Event-center.bind "res-create-chat"
-		result = 
-			err: err
-		res.end JSON.stringify result
-	Facade.create-chat pic-id, from-user-id, to-user-id, msg-body, time, anchor
+		num-of-chats-created += 1
+		if num-of-chats-created == num-of-chats
+			result =
+				err: err
+			res.end JSON.stringify result
+
+	for i from 0 til chats.length
+		pt-id = chats[i].pt-id
+		from-user-id = chats[i].from-user-id
+		to-user-id = chats[i].to-user-id
+		msg-body = chats[i].msg-body
+		time = chats[i].time
+		anchor = chats[i].anchor
+		Facade.create-chat pt-id, from-user-id, to-user-id, msg-body, time, anchor
 
 # /**
 #  * @description 								删除一条聊天记录
@@ -164,14 +171,14 @@ create-chat = !(req, res) ->
  * @param				{Object}res 		响应对象
  */
 read-several-chat = !(req, res) ->
-	pic-id = req.body.pic-id
-	Facade.read-several-chat pic-id
-	Event-center.bind "res-read-several-chat", !(ack, chats, pic-id)->
+	pt-id = req.body.pt-id
+	do
+		(err, chats) <-! Event-center.bind "res-read-several-chat"
 		result = 
-			ack: ack,
-			chats: chats,
-			pic-id: pic-id
-		res.end result
+			err: err,
+			chats: chats
+		res.end JSON.stringify result
+	Facade.read-several-chat pt-id
 
 /**
  * @description 								添加一位好友
@@ -353,7 +360,7 @@ Shell =
 		app.delete "/users/user-destroy", user-destroy
 		app.get "/users/user-info-read", user-info-read
 		app.post "/chats/create-chat", create-chat
-		app.delete "/chats/delete-chat", delete-chat
+		# app.delete "/chats/delete-chat", delete-chat
 		app.get "/chats/read-several-chat", read-several-chat
 		app.post "/friends/create-friend", create-friend
 		app.delete "/friends/delete-friend", delete-friend

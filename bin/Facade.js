@@ -2,9 +2,9 @@
   var async, user, friend, message, picture, EventCenter, Facade;
   async = require('async');
   user = require('./core/modules/user');
-  friend = require('/core/modules/friend');
-  message = require('/core/modules/message');
-  picture = require('/core/modules/picture');
+  friend = require('./core/modules/friend');
+  message = require('./core/modules/message');
+  picture = require('./core/modules/picture');
   EventCenter = require('./EventCenter');
   /**
    * @description													核心程序与路由程序进行交互的接口，实现了内部机制的隐藏
@@ -129,16 +129,16 @@
      * @function													create-chat		
      * @memberof													Facade
      * @description												处理发送聊天消息业务逻辑的接口，处理完毕后将结果通过res-create-chat事件返回给shell模块
-     * @param				{Number}pic-id				图片的id
+     * @param				{Number}pt-id					图片的id
      * @param				{Number}from-user-id	消息发送者的用户id
      * @param				{Number}to-user-id		消息接收者的用户id
      * @param				{String}msg-type			消息类型，可以是文本或者声音
      * @param				{String}content				消息内容
      */,
-    createChat: function(picId, fromUserId, toUserId, msgBody, time, anchor){
+    createChat: function(ptId, fromUserId, toUserId, msgBody, time, anchor){
       var msgObject, callback;
       msgObject = {
-        ptId: picId,
+        ptId: ptId,
         sender: fromUserId,
         receiver: toUserId,
         msgBody: msgBody,
@@ -151,12 +151,21 @@
       message.createAMessage(msgObject, callback);
     }
     /**
-     * @function													read-several-chat	
-     * @memberof													Facade
-     * @description												处理读取与特定图片相关的多条聊天记录业务逻辑的接口，处理完毕后将结果通过res-read-several-chat事件返回给shell模块
-     * @param				{Number}pic-id				要指定获取聊天记录的图片id
+     * @function														read-several-chat	
+     * @memberof														Facade
+     * @description													处理读取与特定图片相关的多条聊天记录业务逻辑的接口，处理完毕后将结果通过res-read-several-chat事件返回给shell模块
+     * @param				{Number}pt-id						要指定获取聊天记录的图片id
      */,
-    readSeveralChat: function(picId){}
+    readSeveralChat: function(ptId){
+      var msgObject, callback;
+      msgObject = {
+        ptId: ptId
+      };
+      callback = function(err, chats){
+        EventCenter.trigger("res-read-several-chat", [err, chats]);
+      };
+      message.getMessageListByPicture(msgObject, callback);
+    }
     /**
      * @function												  create-friend	
      * @memberof												  Facade		

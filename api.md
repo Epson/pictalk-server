@@ -93,16 +93,42 @@
 	HTTP请求方式: POST
 	请求参数json示例：
 		{
-			picId: 2,
-			fromUserId: 1,
-			toUserId: 3,
-			msgType: "text",				// 如果是声音消息则msgType为"voice"，且有与之对应的属性例如"voiceUrl"
-			content: "哈哈",				// 与文本消息对应的属性为text		
+			chats: [
+				{
+					picId: 2,				// 标记某张图片的32位id
+					msgBody: {
+						type: "text",		// 消息类型为文本
+						content: "哈哈",	// 如果是文本消息则该属性为文本的内容
+						url: ""				// 如果是文本消息则该属性为空
+					},
+					fromUserId: "121927532@qq.com",
+					toUserId: "chenxuejia@foxmail.com",
+					time: "2013-03-28-09-50-43",
+					anchor: {				// 该消息在图片中的位置
+						center-x: 100, 		// 单位为px
+						center-y: 100 
+					}
+				}, {
+					picId: 3,				// 标记某张图片的32位id
+					msgBody: {
+						type: "sound",		// 消息类型为声音
+						content: "",		// 如果是声音消息则该属性为空
+						url: ""				// 如果是声音消息则该属性为对应的声音文件的url
+					},
+					fromUserId: "121927532@qq.com",
+					toUserId: "chenxuejia@foxmail.com",
+					time: "2013-03-28-09-50-43",
+					anchor: {
+						center-x: 100, 
+						center-y: 100 
+					}
+				}
+			]
 		}
+		
 	返回响应json示例：
 		{
-			ack: true						// 如果发送不成功则返回false
-			content: "哈哈"					// 返回该条聊天记录的内容 (这里有待商榷)
+			err: err						// 如果发送不成功则返回false
 		}
 ```
 <!-- 
@@ -119,7 +145,7 @@
 			ack: true						// 如果删除不成功则返回false
 		}
 ``` -->
-
+<!-- 
 ###读取一条聊天信息:
 ```
 	URL: chats/read-chat
@@ -137,7 +163,7 @@
 			toUserId: 3,
 			content: "哈哈",													
 		}
-```
+``` -->
 
 ###根据图片读取多条聊天信息：
 ```
@@ -145,13 +171,11 @@
 	HTTP请求方式: GET
 	请求参数json示例：
 		{
-			picId: 2						// 与要获取的聊天消息对应的图片id									
+			pt-id: 2						// 与要获取的聊天消息对应的图片id									
 		}
 	返回响应json示例：
 		{
-			ack: true						// 如果获取失败则返回false
-			chats: [{}, {}, {}, {}, {}]		// 与该图片相关的所有聊天信息						
-			picId: 2																						
+			chats: [{}, {}, {}, {}, {}]		// 与该图片相关的所有聊天信息，聊天信息的格式参照上面的create-chat	
 		}
 ```
 ###添加好友：

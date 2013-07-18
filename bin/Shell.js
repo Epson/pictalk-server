@@ -37,7 +37,7 @@
    * @description 								用户登陆
    * @function 										user-login
    * @memberof										Shell
-   * @param 			{Object}req 		请求对象	
+   * @param 			{Object}req 		请求对象
    * @param				{Object}res 		响应对象
    */
   userLogin = function(req, res){
@@ -143,21 +143,30 @@
    * @param				{Object}res 		响应对象
    */
   createChat = function(req, res){
-    var picId, fromUserId, toUserId, msgBody, time, anchor;
-    picId = req.body.picId;
-    fromUserId = req.body.fromUserId;
-    toUserId = req.body.toUserId;
-    msgBody = req.body.msgBody;
-    time = req.body.time;
-    anchor = req.body.anchor;
+    var chats, numOfChats, numOfChatsCreated, i$, to$, i, ptId, fromUserId, toUserId, msgBody, time, anchor;
+    chats = req.body.chats;
+    numOfChats = chats.length;
+    numOfChatsCreated = 0;
     EventCenter.bind("res-create-chat", function(err){
       var result;
-      result = {
-        err: err
-      };
-      res.end(JSON.stringify(result));
+      numOfChatsCreated += 1;
+      if (numOfChatsCreated === numOfChats) {
+        result = {
+          err: err
+        };
+        res.end(JSON.stringify(result));
+      }
     });
-    Facade.createChat(picId, fromUserId, toUserId, msgBody, time, anchor);
+    for (i$ = 0, to$ = chats.length; i$ < to$; ++i$) {
+      i = i$;
+      ptId = chats[i].ptId;
+      fromUserId = chats[i].fromUserId;
+      toUserId = chats[i].toUserId;
+      msgBody = chats[i].msgBody;
+      time = chats[i].time;
+      anchor = chats[i].anchor;
+      Facade.createChat(ptId, fromUserId, toUserId, msgBody, time, anchor);
+    }
   };
   /**
    * @description 								获取同一张图片上的所有聊天记录
@@ -167,18 +176,17 @@
    * @param				{Object}res 		响应对象
    */
   readSeveralChat = function(req, res){
-    var picId;
-    picId = req.body.picId;
-    Facade.readSeveralChat(picId);
-    EventCenter.bind("res-read-several-chat", function(ack, chats, picId){
+    var ptId;
+    ptId = req.body.ptId;
+    EventCenter.bind("res-read-several-chat", function(err, chats){
       var result;
       result = {
-        ack: ack,
-        chats: chats,
-        picId: picId
+        err: err,
+        chats: chats
       };
-      res.end(result);
+      res.end(JSON.stringify(result));
     });
+    Facade.readSeveralChat(ptId);
   };
   /**
    * @description 								添加一位好友
@@ -387,7 +395,6 @@
       app['delete']("/users/user-destroy", userDestroy);
       app.get("/users/user-info-read", userInfoRead);
       app.post("/chats/create-chat", createChat);
-      app['delete']("/chats/delete-chat", deleteChat);
       app.get("/chats/read-several-chat", readSeveralChat);
       app.post("/friends/create-friend", createFriend);
       app['delete']("/friends/delete-friend", deleteFriend);
