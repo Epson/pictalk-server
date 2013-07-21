@@ -158,11 +158,10 @@ Facade =
 	 * @param				{Number}friend-id			被添加为好友的用户的id
 	 * @param				{String}nick-name			为好友添加的昵称
 	 */
-	create-friend: !(user-id, friend-id, friend-nickname) ->
+	create-friend: !(user-id, friend-id) ->
 		friend-obj = 
 			user-id: user-id,
 			friend-id: friend-id,
-			friend-nickname: friend-nickname
 		callback = !(err) ->
 			EventCenter.trigger "res-create-friend", [err]
 		friend.add-friend friend-obj, callback
@@ -222,9 +221,24 @@ Facade =
 	read-friend-list: !(user-id) ->
 		friend-obj = 
 			user-id: user-id
-		callback = !(err, friends) ->
-			EventCenter.trigger "res-read-friend-list", [err, friends]
-		friend.get-friends-by-user friend-obj, callback
+		get-friend-list = !(err, friends) ->
+			friend-array = [];
+			callback = !(err, friend)->
+				friend-info = 
+					user-id: friend.user-id
+				if friend.nickname?
+					friend-info.username = friend.nickname
+				else 
+					friend-info.username = friend.username
+				if friend-array.length < friends.length
+					friend-array.push friend-info
+				if friend-array.length === friends.length
+					EventCenter.trigger "res-read-friend-list", [err, friend-array]
+			for i from 0 til friends.length
+				user-obj = 
+					user-id: friends[i].friend-id
+				user.get-a-user user-obj, callback
+		friend.get-friends-by-user friend-obj, get-friend-list
 
 	/**
 	 * @function												create-picture	

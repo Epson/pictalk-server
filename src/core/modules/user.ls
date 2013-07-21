@@ -59,7 +59,7 @@ User =
 
   update-user-info: (user-obj, callback) ->
     condition = {user-id: user-obj.user-id}
-
+    console.log condition
     user-model.update-user condition, {$set: user-obj}, (err) ->
       return callback null
 

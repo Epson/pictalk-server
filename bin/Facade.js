@@ -174,12 +174,11 @@
      * @param				{Number}friend-id			被添加为好友的用户的id
      * @param				{String}nick-name			为好友添加的昵称
      */,
-    createFriend: function(userId, friendId, friendNickname){
+    createFriend: function(userId, friendId){
       var friendObj, callback;
       friendObj = {
         userId: userId,
-        friendId: friendId,
-        friendNickname: friendNickname
+        friendId: friendId
       };
       callback = function(err){
         EventCenter.trigger("res-create-friend", [err]);
@@ -248,14 +247,39 @@
      * @param				{Number}user-id			发起读取好友列表操作的用户的id
      */,
     readFriendList: function(userId){
-      var friendObj, callback;
+      var friendObj, getFriendList;
       friendObj = {
         userId: userId
       };
-      callback = function(err, friends){
-        EventCenter.trigger("res-read-friend-list", [err, friends]);
+      getFriendList = function(err, friends){
+        var friendArray, callback, i$, to$, i, userObj;
+        friendArray = [];
+        callback = function(err, friend){
+          var friendInfo;
+          friendInfo = {
+            userId: friend.userId
+          };
+          if (friend.nickname != null) {
+            friendInfo.username = friend.nickname;
+          } else {
+            friendInfo.username = friend.username;
+          }
+          if (friendArray.length < friends.length) {
+            friendArray.push(friendInfo);
+          }
+          if (deepEq$(friendArray.length, friends.length, '===')) {
+            EventCenter.trigger("res-read-friend-list", [err, friendArray]);
+          }
+        };
+        for (i$ = 0, to$ = friends.length; i$ < to$; ++i$) {
+          i = i$;
+          userObj = {
+            userId: friends[i].friendId
+          };
+          user.getAUser(userObj, callback);
+        }
       };
-      friend.getFriendsByUser(friendObj, callback);
+      friend.getFriendsByUser(friendObj, getFriendList);
     }
     /**
      * @function												create-picture	
@@ -361,4 +385,88 @@
     }
   };
   module.exports = Facade;
+  function deepEq$(x, y, type){
+    var toString = {}.toString, hasOwnProperty = {}.hasOwnProperty,
+        has = function (obj, key) { return hasOwnProperty.call(obj, key); };
+    first = true;
+    return eq(x, y, []);
+    function eq(a, b, stack) {
+      var className, length, size, result, alength, blength, r, key, ref, sizeB;
+      if (a == null || b == null) { return a === b; }
+      if (a.__placeholder__ || b.__placeholder__) { return true; }
+      if (a === b) { return a !== 0 || 1 / a == 1 / b; }
+      className = toString.call(a);
+      if (toString.call(b) != className) { return false; }
+      switch (className) {
+        case '[object String]': return a == String(b);
+        case '[object Number]':
+          return a != +a ? b != +b : (a == 0 ? 1 / a == 1 / b : a == +b);
+        case '[object Date]':
+        case '[object Boolean]':
+          return +a == +b;
+        case '[object RegExp]':
+          return a.source == b.source &&
+                 a.global == b.global &&
+                 a.multiline == b.multiline &&
+                 a.ignoreCase == b.ignoreCase;
+      }
+      if (typeof a != 'object' || typeof b != 'object') { return false; }
+      length = stack.length;
+      while (length--) { if (stack[length] == a) { return true; } }
+      stack.push(a);
+      size = 0;
+      result = true;
+      if (className == '[object Array]') {
+        alength = a.length;
+        blength = b.length;
+        if (first) { 
+          switch (type) {
+          case '===': result = alength === blength; break;
+          case '<==': result = alength <= blength; break;
+          case '<<=': result = alength < blength; break;
+          }
+          size = alength;
+          first = false;
+        } else {
+          result = alength === blength;
+          size = alength;
+        }
+        if (result) {
+          while (size--) {
+            if (!(result = size in a == size in b && eq(a[size], b[size], stack))){ break; }
+          }
+        }
+      } else {
+        if ('constructor' in a != 'constructor' in b || a.constructor != b.constructor) {
+          return false;
+        }
+        for (key in a) {
+          if (has(a, key)) {
+            size++;
+            if (!(result = has(b, key) && eq(a[key], b[key], stack))) { break; }
+          }
+        }
+        if (result) {
+          sizeB = 0;
+          for (key in b) {
+            if (has(b, key)) { ++sizeB; }
+          }
+          if (first) {
+            if (type === '<<=') {
+              result = size < sizeB;
+            } else if (type === '<==') {
+              result = size <= sizeB
+            } else {
+              result = size === sizeB;
+            }
+          } else {
+            first = false;
+            result = size === sizeB;
+          }
+        }
+      }
+      stack.pop();
+      return result;
+    }
+  }
 }).call(this);

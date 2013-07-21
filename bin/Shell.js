@@ -1,11 +1,15 @@
 (function(){
-  var express, EventCenter, Facade, app, userRegister, userLogin, userPasswordUpdate, userInfoUpdate, userDestroy, userInfoRead, createChat, readSeveralChat, createFriend, deleteFriend, updateFriendNickName, readFriendInfo, readFriendList, createPicture, deletePicture, readPicture, readPicturesByUser, Shell;
+  var express, EventCenter, Facade, app, userRegister, userLogin, userPasswordUpdate, userInfoUpdate, userUploadAvatar, userDestroy, userInfoRead, createChat, readSeveralChat, createFriend, deleteFriend, updateFriendNickName, readFriendInfo, readFriendList, createPicture, deletePicture, readPicture, readPicturesByUser, Shell;
   express = require('express');
   EventCenter = require('./EventCenter');
   Facade = require('./Facade');
   app = express();
   app.configure(function(){
-    app.use(express.bodyParser());
+    var bodyParams;
+    bodyParams = {
+      uploadDir: __dirname + "/../upload"
+    };
+    app.use(express.bodyParser(bodyParams));
     app.use(express['static'](__dirname + "/../public"));
     app.set("port", process.env.PORT || 8888);
   });
@@ -42,7 +46,6 @@
    */
   userLogin = function(req, res){
     var email, password;
-    console.log(req.body);
     email = req.body.email;
     password = req.body.password;
     EventCenter.bind('res-user-login', function(err){
@@ -95,6 +98,11 @@
       res.end(JSON.stringify(result));
     });
     Facade.userInfoUpdate(userId, avatar, mobile);
+  };
+  userUploadAvatar = function(req, res){
+    var upfile;
+    console.log(req.files);
+    upfile = req.files.upfile;
   };
   /**
    * @description 								用户注销帐号
@@ -196,10 +204,10 @@
    * @param				{Object}res 		响应对象
    */
   createFriend = function(req, res){
-    var userId, friendId, nickName;
+    var userId, friendId;
+    console.log(req.body);
     userId = req.body.userId;
     friendId = req.body.friendId;
-    nickName = req.body.nickName;
     EventCenter.bind("res-create-friend", function(err){
       var result;
       result = {
@@ -207,7 +215,7 @@
       };
       res.end(JSON.stringify(result));
     });
-    Facade.createFriend(userId, friendId, nickName);
+    Facade.createFriend(userId, friendId);
   };
   /**
    * @description 								删除一位好友
@@ -280,7 +288,7 @@
    */
   readFriendList = function(req, res){
     var userId;
-    userId = req.body.userId;
+    userId = req.query.userId;
     EventCenter.bind("res-read-friend-list", function(err, friends){
       var result;
       result = {
@@ -391,6 +399,7 @@
       app.post("/users/user-register", userRegister);
       app.post("/users/user-login", userLogin);
       app.post("/users/user-password-update", userPasswordUpdate);
+      app.post("/users/user-upload-avatar", userUploadAvatar);
       app.post("/users/user-info-update", userInfoUpdate);
       app['delete']("/users/user-destroy", userDestroy);
       app.get("/users/user-info-read", userInfoRead);

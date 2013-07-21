@@ -57,7 +57,6 @@ Friend =
             throw err
           return callback null
 
-
   update-friend-nickname: !(_friend, callback) ->
     condition =
       user-id: _friend.user-id

@@ -80,6 +80,7 @@
       condition = {
         userId: userObj.userId
       };
+      console.log(condition);
       return userModel.updateUser(condition, {
         $set: userObj
       }, function(err){

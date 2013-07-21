@@ -8,7 +8,9 @@ app = express!
 # 指定通用环境下的参数
 do
 	<-! app.configure
-	app.use express.bodyParser!
+	body-params = 
+		uploadDir: __dirname + "/../upload"
+	app.use express.bodyParser body-params
 	app.use express.static __dirname + "/../public"
 	app.set "port", process.env.PORT || 8888
 
@@ -43,7 +45,6 @@ user-register = !(req, res) ->
  * @param				{Object}res 		响应对象
  */
 user-login = !(req, res) ->
-	console.log req.body
 	email = req.body.email
 	password = req.body.password
 	do 
@@ -86,6 +87,10 @@ user-info-update = !(req, res) ->
 			err: err
 		res.end JSON.stringify result
 	Facade.user-info-update user-id, avatar, mobile 
+
+user-upload-avatar = !(req, res) ->
+	console.log req.files
+	upfile = req.files.upfile
 
 /**
  * @description 								用户注销帐号
@@ -188,15 +193,15 @@ read-several-chat = !(req, res) ->
  * @param				{Object}res 		响应对象
  */
 create-friend = !(req, res) ->
+	console.log req.body
 	user-id = req.body.user-id
 	friend-id = req.body.friend-id
-	nick-name = req.body.nick-name
 	do 
 		(err) <-! Event-center.bind "res-create-friend"
 		result = 
 			err: err
 		res.end JSON.stringify result
-	Facade.create-friend user-id, friend-id, nick-name 
+	Facade.create-friend user-id, friend-id
 
 /**
  * @description 								删除一位好友
@@ -259,7 +264,7 @@ read-friend-info = !(req, res) ->
  * @param				{Object}res 		响应对象
  */
 read-friend-list = !(req, res) ->
-	user-id = req.body.user-id
+	user-id = req.query.user-id
 	do 
 		(err, friends) <-! Event-center.bind "res-read-friend-list"
 		result = 
@@ -356,6 +361,7 @@ Shell =
 		app.post "/users/user-register", user-register
 		app.post "/users/user-login", user-login
 		app.post "/users/user-password-update", user-password-update
+		app.post "/users/user-upload-avatar", user-upload-avatar
 		app.post "/users/user-info-update", user-info-update
 		app.delete "/users/user-destroy", user-destroy
 		app.get "/users/user-info-read", user-info-read
