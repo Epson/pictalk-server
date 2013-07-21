@@ -27,7 +27,6 @@ do
  * @param				{Object}res 		响应对象
  */
 user-register = !(req, res) ->
-	console.log req.body
 	email = req.body.email
 	password = req.body.password
 	do
@@ -116,7 +115,7 @@ user-destroy = !(req, res) ->
  * @param				{Object}res 		响应对象
  */
 user-info-read = !(req, res) ->
-	user-id = req.body.user-id
+	user-id = req.query.user-id
 	do 
 		(err, user) <-! Event-center.bind "res-user-info-read"
 		result = 
@@ -193,7 +192,6 @@ read-several-chat = !(req, res) ->
  * @param				{Object}res 		响应对象
  */
 create-friend = !(req, res) ->
-	console.log req.body
 	user-id = req.body.user-id
 	friend-id = req.body.friend-id
 	do 

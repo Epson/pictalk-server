@@ -25,7 +25,6 @@
    */
   userRegister = function(req, res){
     var email, password;
-    console.log(req.body);
     email = req.body.email;
     password = req.body.password;
     EventCenter.bind('res-user-register', function(err){
@@ -132,7 +131,7 @@
    */
   userInfoRead = function(req, res){
     var userId;
-    userId = req.body.userId;
+    userId = req.query.userId;
     EventCenter.bind("res-user-info-read", function(err, user){
       var result;
       result = {
@@ -205,7 +204,6 @@
    */
   createFriend = function(req, res){
     var userId, friendId;
-    console.log(req.body);
     userId = req.body.userId;
     friendId = req.body.friendId;
     EventCenter.bind("res-create-friend", function(err){
